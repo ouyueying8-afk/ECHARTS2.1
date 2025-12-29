@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国人口趋势分析</title>
+    <!-- 引入ECharts库 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background-color: transparent;
+            padding: 10px;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        #chart-container {
+            width: 100%;
+            height: 100%;
+            min-width: 800px;
+            min-height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 图表容器 -->
+    <div id="chart-container"></div>
+
+    <script>
+        // 初始化ECharts实例
+        const chartDom = document.getElementById('chart-container');
+        const myChart = echarts.init(chartDom);
+        
+        // 图表配置
+        const option = {
+            title: {
+                text: '中国人口趋势分析',
+                subtext: '2000-2024年结婚对数与出生人口变化趋势',
+                left: 'center',
+                top: '5%',
+                textStyle: {
+                    color: '#e91e63',
+                    fontSize: 22,
+                    fontWeight: 'bold',
+                    fontFamily: 'Arial, sans-serif'
+                },
+                subtextStyle: {
+                    color: '#c2185b',
+                    fontSize: 14,
+                    fontFamily: 'Arial, sans-serif'
+                }
+            },
+            
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                borderColor: '#f8bbd0',
+                borderWidth: 2,
+                textStyle: {
+                    color: '#880e4f',
+                    fontSize: 12,
+                    fontFamily: 'Microsoft YaHei'
+                },
+                formatter: function(params) {
+                    var result = `<div style="font-weight:bold;color:#d81b60;margin-bottom:5px;">${params[0].axisValue}年</div>`;
+                    params.forEach(function(item) {
+                        var unit = item.seriesName.includes('结婚') ? '万对' : '万人';
+                        var color = item.color;
+                        result += `
+                        <div style="display:flex;align-items:center;margin:3px 0;">
+                            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background-color:${color};margin-right:8px;"></span>
+                            <span style="color:#ad1457;">${item.seriesName}:</span>
+                            <span style="margin-left:10px;font-weight:bold;color:#880e4f;">${item.value} ${unit}</span>
+                        </div>`;
+                    });
+                    return result;
+                },
+                extraCssText: 'box-shadow: 0 4px 20px rgba(233, 30, 99, 0.15); border-radius: 8px; padding: 12px;',
+                axisPointer: {
+                    type: 'line',
+                    lineStyle: {
+                        color: '#f48fb1',
+                        width: 2,
+                        type: 'dashed'
+                    },
+                    label: {
+                        backgroundColor: '#ec407a',
+                        color: '#fff',
+                        fontSize: 11
+                    }
+                }
+            },
+            
+            legend: {
+                data: ['结婚对数', '出生人口'],
+                top: '15%',
+                left: 'center',
+                textStyle: {
+                    color: '#c2185b',
+                    fontSize: 13,
+                    fontFamily: 'Microsoft YaHei'
+                },
+                itemGap: 30,
+                itemWidth: 25,
+                itemHeight: 14,
+                icon: 'roundRect',
+                formatter: function(name) {
+                    return name + ' | ' + (name.includes('结婚') ? '万对' : '万人');
+                }
+            },
+            
+            grid: {
+                left: '12%',
+                right: '10%',
+                bottom: '15%',
+                top: '25%',
+                containLabel: true
+            },
+            
+            toolbox: {
+                feature: {
+                    saveAsImage: {
+                        title: '保存图表',
+                        name: '人口趋势分析',
+                        pixelRatio: 2,
+                        backgroundColor: 'transparent'
+                    },
+                    magicType: {
+                        type: ['line', 'bar'],
+                        title: {
+                            line: '折线图',
+                            bar: '柱状图'
+                        }
+                    },
+                    dataView: {
+                        title: '数据详情',
+                        readOnly: true,
+                        lang: ['数据视图', '关闭', '刷新']
+                    },
+                    restore: {
+                        title: '还原'
+                    }
+                },
+                top: 15,
+                right: 20,
+                iconStyle: {
+                    borderColor: '#e91e63',
+                    color: '#e91e63'
+                },
+                emphasis: {
+                    iconStyle: {
+                        borderColor: '#c2185b',
+                        color: '#c2185b'
+                    }
+                }
+            },
+            
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: [
+                    '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009',
+                    '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019',
+                    '2020', '2021', '2022', '2023', '2024'
+                ],
+                axisLine: {
+                    lineStyle: {
+                        color: '#f8bbd0',
+                        width: 2
+                    }
+                },
+                axisLabel: {
+                    color: '#ad1457',
+                    fontSize: 11,
+                    fontFamily: 'Microsoft YaHei',
+                    margin: 10,
+                    interval: 0
+                },
+                axisTick: {
+                    show: true,
+                    length: 6,
+                    lineStyle: {
+                        color: '#f8bbd0'
+                    }
+                },
+                splitLine: {
+                    show: true,
+                    lineStyle: {
+                        color: 'rgba(248, 187, 208, 0.3)',
+                        type: 'dashed'
+                    }
+                }
+            },
+            
+            yAxis: {
+                type: 'value',
+                name: '数量',
+                nameTextStyle: {
+                    color: '#c2185b',
+                    fontSize: 12,
+                    padding: [0, 0, 0, -40],
+                    fontFamily: 'Microsoft YaHei'
+                },
+                axisLine: {
+                    show: true,
+                    lineStyle: {
+                        color: '#f8bbd0',
+                        width: 2
+                    }
+                },
+                axisLabel: {
+                    color: '#ad1457',
+                    fontSize: 11,
+                    fontFamily: 'Microsoft YaHei',
+                    formatter: function(value) {
+                        if (value >= 1000) {
+                            return (value / 1000) + 'k';
+                        }
+                        return value;
+                    }
+                },
+                axisTick: {
+                    show: true,
+                    length: 4,
+                    lineStyle: {
+                        color: '#f8bbd0'
+                    }
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: 'rgba(248, 187, 208, 0.2)',
+                        type: 'dashed'
+                    }
+                },
+                min: 0,
+                max: 2000,
+                interval: 400
+            },
+            
+            series: [
+                {
+                    name: '结婚对数',
+                    type: 'line',
+                    data: [
+                        848.5, 805, 786, 811.4, 867.2, 823.1, 945, 991.4, 1098.3, 1212.2,
+                        1241, 1302.4, 1323.6, 1346.9, 1306.7, 1224.7, 1142.8, 1063.1, 1013.9, 927.3,
+                        814.3, 763.6, 683.5, 768, 610.6
+                    ],
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    showSymbol: true,
+                    smooth: true,
+                    lineStyle: {
+                        color: '#e91e63',
+                        width: 4,
+                        shadowColor: 'rgba(233, 30, 99, 0.4)',
+                        shadowBlur: 15,
+                        shadowOffsetY: 5
+                    },
+                    itemStyle: {
+                        color: '#ffffff',
+                        borderColor: '#e91e63',
+                        borderWidth: 3,
+                        shadowColor: 'rgba(233, 30, 99, 0.5)',
+                        shadowBlur: 8
+                    },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: 'rgba(233, 30, 99, 0.4)' },
+                            { offset: 0.7, color: 'rgba(233, 30, 99, 0.1)' },
+                            { offset: 1, color: 'rgba(233, 30, 99, 0)' }
+                        ])
+                    },
+                    emphasis: {
+                        scale: true,
+                        scaleSize: 12,
+                        itemStyle: {
+                            color: '#ffffff',
+                            borderColor: '#c2185b',
+                            borderWidth: 4,
+                            shadowColor: 'rgba(194, 24, 91, 0.8)',
+                            shadowBlur: 15
+                        },
+                        lineStyle: {
+                            width: 5,
+                            shadowColor: 'rgba(233, 30, 99, 0.6)',
+                            shadowBlur: 20
+                        }
+                    },
+                    markLine: {
+                        silent: true,
+                        symbol: 'none',
+                        lineStyle: {
+                            color: '#f8bbd0',
+                            width: 1,
+                            type: 'dashed'
+                        },
+                        data: [
+                            {
+                                yAxis: 1300,
+                                label: {
+                                    show: false
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    name: '出生人口',
+                    type: 'line',
+                    data: [
+                        1771, 1702, 1647, 1599, 1593, 1617, 1585, 1595, 1608, 1591,
+                        1592, 1604, 1634, 1640, 1688, 1655, 1785, 1723, 1524, 1465,
+                        1200, 1062, 956, 902, 954
+                    ],
+                    symbol: 'diamond',
+                    symbolSize: 10,
+                    showSymbol: true,
+                    smooth: true,
+                    lineStyle: {
+                        color: '#9c27b0',
+                        width: 4,
+                        shadowColor: 'rgba(156, 39, 176, 0.4)',
+                        shadowBlur: 15,
+                        shadowOffsetY: 5
+                    },
+                    itemStyle: {
+                        color: '#ffffff',
+                        borderColor: '#9c27b0',
+                        borderWidth: 3,
+                        shadowColor: 'rgba(156, 39, 176, 0.5)',
+                        shadowBlur: 8
+                    },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: 'rgba(156, 39, 176, 0.4)' },
+                            { offset: 0.7, color: 'rgba(156, 39, 176, 0.1)' },
+                            { offset: 1, color: 'rgba(156, 39, 176, 0)' }
+                        ])
+                    },
+                    emphasis: {
+                        scale: true,
+                        scaleSize: 14,
+                        itemStyle: {
+                            color: '#ffffff',
+                            borderColor: '#7b1fa2',
+                            borderWidth: 4,
+                            shadowColor: 'rgba(123, 31, 162, 0.8)',
+                            shadowBlur: 15
+                        },
+                        lineStyle: {
+                            width: 5,
+                            shadowColor: 'rgba(156, 39, 176, 0.6)',
+                            shadowBlur: 20
+                        }
+                    }
+                }
+            ],
+            
+            graphic: [
+                {
+                    type: 'text',
+                    left: 'center',
+                    top: 'bottom',
+                    z: 100,
+                    style: {
+                        text: '数据来源: 新浪财经 | 2000-2024',
+                        fill: '#c2185b',
+                        fontSize: 10,
+                        fontFamily: 'Microsoft YaHei'
+                    }
+                }
+            ],
+            
+            color: ['#e91e63', '#9c27b0'],
+            backgroundColor: {
+                type: 'radial',
+                x: 0.5,
+                y: 0.5,
+                r: 1,
+                colorStops: [
+                    { offset: 0, color: 'rgba(255, 245, 250, 0.9)' },
+                    { offset: 1, color: 'rgba(255, 240, 245, 0.5)' }
+                ]
+            },
+            animation: true,
+            animationDuration: 1500,
+            animationEasing: 'cubicOut'
+        };
+
+        // 应用配置
+        myChart.setOption(option);
+
+        // 响应窗口大小变化
+        window.addEventListener('resize', function() {
+            myChart.resize();
+        });
+    </script>
+</body>
+</html>
